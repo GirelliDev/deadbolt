@@ -25,9 +25,16 @@ type RCON struct {
 	Password string `toml:"password"` // empty = read RCONPassword from the server ini
 }
 
+type Backup struct {
+	Dir        string `toml:"dir"`
+	KeepDaily  int    `toml:"keep_daily"`
+	KeepWeekly int    `toml:"keep_weekly"`
+}
+
 type Config struct {
 	Server Server `toml:"server"`
 	RCON   RCON   `toml:"rcon"`
+	Backup Backup `toml:"backup"`
 }
 
 func Default() Config {
@@ -38,7 +45,8 @@ func Default() Config {
 			InstallDir: "/home/pz/server",
 			DataDir:    "/home/pz/Zomboid",
 		},
-		RCON: RCON{Host: "127.0.0.1"},
+		RCON:   RCON{Host: "127.0.0.1"},
+		Backup: Backup{Dir: "/home/pz/deadbolt-backups", KeepDaily: 7, KeepWeekly: 4},
 	}
 }
 

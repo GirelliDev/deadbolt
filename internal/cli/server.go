@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io"
+	"os"
 	"regexp"
 	"strconv"
 	"time"
@@ -20,6 +22,7 @@ type env struct {
 	cfg  config.Config
 	ini  map[string]string
 	unit svc.Unit
+	rest []string // positional args left after flags
 }
 
 func load(name string, args []string, errw io.Writer) (*env, int) {
@@ -38,11 +41,13 @@ func load(name string, args []string, errw io.Writer) (*env, int) {
 		return nil, 1
 	}
 	ini, err := config.ReadINI(cfg.INIPath())
-	if err != nil {
+	if errors.Is(err, os.ErrNotExist) {
+		ini = map[string]string{} // fresh install or restore target: no settings yet
+	} else if err != nil {
 		fmt.Fprintf(errw, "dbolt: cannot read %s: %v\n", cfg.INIPath(), err)
 		return nil, 1
 	}
-	return &env{cfg: cfg, ini: ini, unit: svc.New(cfg.Server.Service)}, -1
+	return &env{cfg: cfg, ini: ini, unit: svc.New(cfg.Server.Service), rest: fs.Args()}, -1
 }
 
 func (e *env) rcon() (*rcon.Client, error) {
