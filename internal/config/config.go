@@ -78,7 +78,9 @@ func Load(path string) (Config, error) {
 	}
 	for _, p := range candidates {
 		b, err := os.ReadFile(p)
-		if errors.Is(err, os.ErrNotExist) {
+		// Searching: a missing or unreadable candidate (e.g. ./deadbolt.toml in a
+		// directory this user cannot read) just means "try the next one".
+		if errors.Is(err, os.ErrNotExist) || (!explicit && errors.Is(err, os.ErrPermission)) {
 			if explicit {
 				return cfg, fmt.Errorf("config %s: %w", p, err)
 			}
