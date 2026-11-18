@@ -16,10 +16,10 @@ type command struct {
 
 func commands() []command {
 	return []command{
-		{"status", "show server state, players and pending updates", todo("status")},
-		{"start", "start the server", todo("start")},
-		{"stop", "stop the server (saves first)", todo("stop")},
-		{"restart", "restart the server", todo("restart")},
+		{"status", "show server state, players and pending updates", cmdStatus},
+		{"start", "start the server", cmdStart},
+		{"stop", "stop the server (saves first)", cmdStop},
+		{"restart", "restart the server", cmdRestart},
 		{"backup", "create, list and restore backups", todo("backup")},
 		{"install", "install the server with SteamCMD", todo("install")},
 		{"update", "update game and mods (waits for an empty server)", todo("update")},
