@@ -256,7 +256,7 @@ func Restore(archive, dataDir string, now time.Time) ([]string, error) {
 	if len(present) == 0 {
 		return nil, errors.New("archive is empty")
 	}
-	chownLike(tmp, dataDir)
+	fixAccess(tmp, dataDir)
 
 	var moved []string
 	suffix := ".pre-restore-" + now.Format(stamp)
@@ -304,10 +304,25 @@ func writeFile(p string, r io.Reader, mode fs.FileMode) error {
 	return f.Close()
 }
 
-// chownLike gives the restored tree the owner of ref when running as root, so
-// the (non-root) server user can write to it.
-func chownLike(root, ref string) {
+// fixAccess makes the restored tree usable by the (non-root) game user.
+// As root it hands ownership to the owner of ref. As another user (dbolt) it
+// adds group read/write so the ACL granted to the game user takes effect
+// (the ACL mask follows the group bits).
+func fixAccess(root, ref string) {
 	if os.Geteuid() != 0 {
+		filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
+			if err != nil || d.Type()&fs.ModeSymlink != 0 {
+				return nil
+			}
+			if info, err := d.Info(); err == nil {
+				add := fs.FileMode(0o060)
+				if info.IsDir() {
+					add = 0o070
+				}
+				os.Chmod(p, info.Mode().Perm()|add)
+			}
+			return nil
+		})
 		return
 	}
 	st, err := os.Stat(ref)

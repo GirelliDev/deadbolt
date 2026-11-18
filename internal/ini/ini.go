@@ -124,7 +124,11 @@ func WriteAtomic(path string, data []byte) error {
 		tmp.Close()
 		return err
 	}
-	if err := tmp.Chmod(st.Mode().Perm()); err != nil {
+	perm := st.Mode().Perm()
+	if os.Geteuid() != 0 {
+		perm |= 0o060 // the game user is granted write by ACL; the ACL mask follows the group bits
+	}
+	if err := tmp.Chmod(perm); err != nil {
 		tmp.Close()
 		return err
 	}

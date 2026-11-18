@@ -46,11 +46,13 @@ func (p pending) any() bool { return p.game || len(p.mods) > 0 }
 func (e *env) steamRunner(stream io.Writer) steam.Runner {
 	return func(args ...string) (string, error) {
 		name, full := e.cfg.Steam.SteamCMD, args
-		if os.Geteuid() == 0 {
-			if st, err := os.Stat(e.cfg.Server.InstallDir); err == nil {
-				if sys, ok := st.Sys().(*syscall.Stat_t); ok && sys.Uid != 0 {
-					if u, err := user.LookupId(strconv.Itoa(int(sys.Uid))); err == nil {
+		if st, err := os.Stat(e.cfg.Server.InstallDir); err == nil {
+			if sys, ok := st.Sys().(*syscall.Stat_t); ok && int(sys.Uid) != os.Geteuid() {
+				if u, err := user.LookupId(strconv.Itoa(int(sys.Uid))); err == nil {
+					if os.Geteuid() == 0 {
 						name, full = "runuser", append([]string{"-u", u.Username, "--", e.cfg.Steam.SteamCMD}, args...)
+					} else { // a narrow sudoers rule allows exactly this
+						name, full = "sudo", append([]string{"-n", "-H", "-u", u.Username, e.cfg.Steam.SteamCMD}, args...)
 					}
 				}
 			}
