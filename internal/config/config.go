@@ -31,10 +31,16 @@ type Backup struct {
 	KeepWeekly int    `toml:"keep_weekly"`
 }
 
+type Steam struct {
+	SteamCMD string `toml:"steamcmd"` // path to the steamcmd binary
+	Branch   string `toml:"branch"`   // "" = keep the installed branch; public, unstable...
+}
+
 type Config struct {
 	Server Server `toml:"server"`
 	RCON   RCON   `toml:"rcon"`
 	Backup Backup `toml:"backup"`
+	Steam  Steam  `toml:"steam"`
 }
 
 func Default() Config {
@@ -47,6 +53,7 @@ func Default() Config {
 		},
 		RCON:   RCON{Host: "127.0.0.1"},
 		Backup: Backup{Dir: "/home/pz/deadbolt-backups", KeepDaily: 7, KeepWeekly: 4},
+		Steam:  Steam{SteamCMD: "/usr/games/steamcmd"},
 	}
 }
 

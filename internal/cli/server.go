@@ -1,11 +1,9 @@
 package cli
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"io"
-	"os"
 	"regexp"
 	"strconv"
 	"time"
@@ -41,9 +39,7 @@ func load(name string, args []string, errw io.Writer) (*env, int) {
 		return nil, 1
 	}
 	ini, err := config.ReadINI(cfg.INIPath())
-	if errors.Is(err, os.ErrNotExist) {
-		ini = map[string]string{} // fresh install or restore target: no settings yet
-	} else if err != nil {
+	if err != nil {
 		fmt.Fprintf(errw, "dbolt: cannot read %s: %v\n", cfg.INIPath(), err)
 		return nil, 1
 	}
