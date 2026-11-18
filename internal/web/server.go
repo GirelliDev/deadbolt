@@ -109,7 +109,9 @@ func writeJSON(w http.ResponseWriter, code int, v any) {
 	json.NewEncoder(w).Encode(v)
 }
 
-func fail(w http.ResponseWriter, code int, msg string) { writeJSON(w, code, map[string]string{"error": msg}) }
+func fail(w http.ResponseWriter, code int, msg string) {
+	writeJSON(w, code, map[string]string{"error": msg})
+}
 
 // sameOrigin blocks cross-site POSTs: a custom header (which browsers will not
 // send cross-site without CORS) plus a matching Origin when one is present.
