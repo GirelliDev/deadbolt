@@ -12,8 +12,7 @@ password = ""                       # empty = RCONPassword from the server .ini
 
 [backup]
 dir         = "/home/pz/deadbolt-backups"
-keep_daily  = 7
-keep_weekly = 4
+keep        = 1                     # a new backup replaces the previous one
 
 [steam]
 steamcmd = "/usr/games/steamcmd"

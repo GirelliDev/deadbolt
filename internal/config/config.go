@@ -26,9 +26,8 @@ type RCON struct {
 }
 
 type Backup struct {
-	Dir        string `toml:"dir"`
-	KeepDaily  int    `toml:"keep_daily"`
-	KeepWeekly int    `toml:"keep_weekly"`
+	Dir  string `toml:"dir"`
+	Keep int    `toml:"keep"` // how many backups to retain; 1 = a new one replaces the old one
 }
 
 type Steam struct {
@@ -58,7 +57,7 @@ func Default() Config {
 			DataDir:    "/home/pz/Zomboid",
 		},
 		RCON:   RCON{Host: "127.0.0.1"},
-		Backup: Backup{Dir: "/home/pz/deadbolt-backups", KeepDaily: 7, KeepWeekly: 4},
+		Backup: Backup{Dir: "/home/pz/deadbolt-backups", Keep: 1},
 		Steam:  Steam{SteamCMD: "/usr/games/steamcmd"},
 		Web:    Web{Listen: "127.0.0.1:8787", StateDir: "/var/lib/deadbolt"},
 	}

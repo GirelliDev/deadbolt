@@ -178,33 +178,16 @@ func List(dir, server string) ([]Info, error) {
 	return out, nil
 }
 
-// Prune returns the backups that fall outside the retention policy: the newest
-// backup of each of the last keepDaily days plus the newest of each of the
-// last keepWeekly ISO weeks. "manual" backups are never selected.
-func Prune(list []Info, keepDaily, keepWeekly int) []Info {
+// Prune returns the backups to delete so that only the newest keep remain.
+// keep < 1 is treated as 1: pruning never removes the last backup.
+func Prune(list []Info, keep int) []Info {
+	keep = max(keep, 1)
 	sorted := append([]Info(nil), list...)
 	sort.Slice(sorted, func(i, j int) bool { return sorted[i].Time.After(sorted[j].Time) })
-	days, weeks := map[string]bool{}, map[string]bool{}
-	var del []Info
-	for _, b := range sorted {
-		if b.Reason == "manual" {
-			continue
-		}
-		dk := b.Time.Format("2006-01-02")
-		y, w := b.Time.ISOWeek()
-		wk := fmt.Sprintf("%d-W%02d", y, w)
-		keep := false
-		if !days[dk] && len(days) < keepDaily {
-			days[dk], keep = true, true
-		}
-		if !weeks[wk] && len(weeks) < keepWeekly {
-			weeks[wk], keep = true, true
-		}
-		if !keep {
-			del = append(del, b)
-		}
+	if len(sorted) <= keep {
+		return nil
 	}
-	return del
+	return sorted[keep:]
 }
 
 // Restore extracts archive into dataDir. Existing Saves/Server/db folders that

@@ -18,7 +18,7 @@ Subcommands:
   list               list backups, newest first
   restore <name>     restore a backup (the server must be stopped;
                      replaced folders are kept as *.pre-restore-<time>)
-  prune              delete backups outside the retention policy
+  prune              delete all but the newest backup (config: [backup] keep)
 `
 
 func cmdBackup(args []string, out, errw io.Writer) int {
@@ -87,7 +87,7 @@ func (e *env) prune(out io.Writer) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	del := backup.Prune(list, e.cfg.Backup.KeepDaily, e.cfg.Backup.KeepWeekly)
+	del := backup.Prune(list, e.cfg.Backup.Keep)
 	for _, b := range del {
 		if err := os.Remove(b.Path); err != nil {
 			return 0, err

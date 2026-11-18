@@ -12,7 +12,7 @@ dbolt -help
 | Comando | |
 |---|---|
 | `dbolt status` / `start` / `stop` / `restart` | Estado, jogadores (RCON) e nº de mods. Stop/restart salvam o mundo antes. |
-| `dbolt backup create\|list\|restore\|prune` | `.tar.zst` de Saves, configs do servidor e db. Retenção diária/semanal. O restore guarda as pastas substituídas como `*.pre-restore-*`. |
+| `dbolt backup create\|list\|restore\|prune` | `.tar.zst` de Saves, configs do servidor e db. Só o último é mantido: um backup novo substitui o anterior. O restore guarda as pastas substituídas como `*.pre-restore-*`. |
 | `dbolt install` | Instala o servidor pelo SteamCMD (`-branch public\|unstable`). |
 | `dbolt update check` | Há build nova do jogo ou mod do Workshop mais novo? |
 | `dbolt update` / `-wait` / `-force` | Aplica. Recusa com jogadores online; `-wait` espera o servidor esvaziar. Sempre faz backup antes e volta atrás se o servidor não subir. |
@@ -36,7 +36,7 @@ bloqueio após tentativas erradas, checagem de header contra CSRF, CSP estrita e
 Para acessar de fora, ponha um proxy reverso com HTTPS na frente.
 Tudo que é digitado no painel passa por uma lista de permissão estrita antes de virar comando RCON.
 
-Ainda fora do painel: curar e matar. A RCON do Project Zomboid não tem esses comandos; precisam de um mod Lua de servidor (roadmap).
+Curar e matar não são oferecidos: a RCON do Project Zomboid não tem esses comandos.
 
 ## Instalação
 
@@ -51,7 +51,7 @@ A RCON precisa de `RCONPort` e `RCONPassword` no `.ini` do servidor (reinicie o 
 
 ## Roadmap
 
-Geração do primeiro boot e da unit no `dbolt install`, mod de curar/matar, papéis no painel,
+Geração do primeiro boot e da unit no `dbolt install`, papéis no painel,
 backup externo, vários servidores, Build 41.
 
 Project Zomboid é marca da The Indie Stone. O Deadbolt é uma ferramenta comunitária não oficial.

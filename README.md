@@ -12,7 +12,7 @@ dbolt -help
 | Command | |
 |---|---|
 | `dbolt status` / `start` / `stop` / `restart` | State, players (RCON) and mod count. Stop/restart save the world first. |
-| `dbolt backup create\|list\|restore\|prune` | `.tar.zst` of Saves, Server settings and db. Daily/weekly retention. Restore keeps the replaced folders as `*.pre-restore-*`. |
+| `dbolt backup create\|list\|restore\|prune` | `.tar.zst` of Saves, Server settings and db. Only the latest is kept: a new backup replaces the previous one. Restore keeps the replaced folders as `*.pre-restore-*`. |
 | `dbolt install` | Install the server with SteamCMD (`-branch public\|unstable`). |
 | `dbolt update check` | Is there a new game build or a newer Workshop mod? |
 | `dbolt update` / `-wait` / `-force` | Apply it. Refuses while players are online; `-wait` waits for an empty server. Always backs up first and rolls back if the server does not come back. |
@@ -36,7 +36,7 @@ login lockout, CSRF header check, strict CSP, and an audit log of every action i
 To reach it from outside, put an HTTPS reverse proxy in front.
 Everything typed in the panel is validated against a strict allowlist before it becomes an RCON command.
 
-Not in the panel yet: heal and kill. Project Zomboid's RCON has no commands for them, they need a small server-side Lua mod (roadmap).
+Heal and kill are not offered: Project Zomboid's RCON has no commands for them.
 
 ## Install
 
@@ -51,7 +51,7 @@ RCON needs `RCONPort` and `RCONPassword` set in the server `.ini` (restart the s
 
 ## Roadmap
 
-First-run server generation and unit creation in `dbolt install`, heal/kill mod, multi-user panel roles,
+First-run server generation and unit creation in `dbolt install`, multi-user panel roles,
 off-site backups, multiple servers, Build 41.
 
 Project Zomboid is a trademark of The Indie Stone. Deadbolt is an unofficial community tool.

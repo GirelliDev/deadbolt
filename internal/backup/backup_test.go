@@ -77,21 +77,21 @@ func TestRestoreRejectsTraversal(t *testing.T) {
 }
 
 func TestPrune(t *testing.T) {
-	d := func(day, hour int, reason string) Info {
-		return Info{Name: reason, Reason: reason, Time: time.Date(2026, 11, day, hour, 0, 0, 0, time.UTC)}
+	at := func(h int, reason string) Info {
+		return Info{Name: reason, Reason: reason, Time: time.Date(2026, 11, 18, h, 0, 0, 0, time.UTC)}
 	}
-	list := []Info{
-		d(18, 9, "auto"), d(18, 3, "auto"), // same day: only the newest stays
-		d(17, 3, "auto"), d(16, 3, "auto"),
-		d(1, 3, "auto"),   // old, outside 3 days, but week 44 slot? keepWeekly=1 -> only current week
-		d(2, 3, "manual"), // manual is never pruned
+	list := []Info{at(9, "manual"), at(12, "pre-update"), at(3, "manual")}
+	del := Prune(list, 1)
+	if len(del) != 2 || del[0].Time.Hour() != 9 || del[1].Time.Hour() != 3 {
+		t.Fatalf("only the newest (12h) may stay, any reason: %+v", del)
 	}
-	del := Prune(list, 3, 1)
-	got := map[string]int{}
-	for _, b := range del {
-		got[b.Time.Format("02-15")]++
+	if len(Prune(list, 0)) != 2 || len(Prune(list, -5)) != 2 {
+		t.Fatal("keep < 1 must still keep one")
 	}
-	if len(del) != 2 || got["18-03"] != 1 || got["01-03"] != 1 {
-		t.Fatalf("deleted: %+v", del)
+	if len(Prune(list[:1], 1)) != 0 || len(Prune(nil, 1)) != 0 {
+		t.Fatal("the only backup must never be deleted")
+	}
+	if len(Prune(list, 2)) != 1 {
+		t.Fatal("keep=2")
 	}
 }

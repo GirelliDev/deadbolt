@@ -12,7 +12,7 @@ func TestLoadDefaultsAndOverride(t *testing.T) {
 	t.Cleanup(func() { os.Chdir(wd) })
 	t.Setenv("DEADBOLT_CONFIG", "")
 	c, err := Load("")
-	if err != nil || c.Server.Name != "servertest" || c.Backup.KeepDaily != 7 {
+	if err != nil || c.Server.Name != "servertest" || c.Backup.Keep != 1 {
 		t.Fatalf("defaults: %v %+v", err, c)
 	}
 	p := filepath.Join(t.TempDir(), "d.toml")
