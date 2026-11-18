@@ -70,3 +70,10 @@ func TestRemoteAndOutdated(t *testing.T) {
 		t.Fatalf("%+v", up)
 	}
 }
+
+func TestWorkshopArgs(t *testing.T) {
+	got := WorkshopArgs("/d", "123456")
+	if got[len(got)-3] != "108600" || got[len(got)-2] != "123456" {
+		t.Fatalf("%v", got)
+	}
+}

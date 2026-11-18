@@ -23,8 +23,8 @@ func commands() []command {
 		{"backup", "create, list and restore backups", cmdBackup},
 		{"install", "install the server with SteamCMD", cmdInstall},
 		{"update", "update game and mods (waits for an empty server)", cmdUpdate},
-		{"mods", "add, remove and list Workshop mods", todo("mods")},
-		{"config", "view and edit server settings", todo("config")},
+		{"mods", "add, remove and list Workshop mods", cmdMods},
+		{"config", "view and edit server settings", cmdConfig},
 		{"web", "run the web panel", todo("web")},
 	}
 }

@@ -21,13 +21,39 @@ type env struct {
 	ini  map[string]string
 	unit svc.Unit
 	rest []string // positional args left after flags
+
+	force, reveal, all bool
+	mod                string
+}
+
+// reorder moves flags before positional args so `config set K V -force` works.
+// Flags that take a value (-config, -mod) bring their value along.
+func reorder(args []string) []string {
+	var flags, pos []string
+	for i := 0; i < len(args); i++ {
+		a := args[i]
+		switch {
+		case a == "-" || a == "--" || len(a) < 2 || a[0] != '-':
+			pos = append(pos, a)
+		case (a == "-config" || a == "--config" || a == "-mod" || a == "--mod") && i+1 < len(args):
+			flags = append(flags, a, args[i+1])
+			i++
+		default:
+			flags = append(flags, a)
+		}
+	}
+	return append(flags, pos...)
 }
 
 func load(name string, args []string, errw io.Writer) (*env, int) {
 	fs := flag.NewFlagSet("dbolt "+name, flag.ContinueOnError)
 	fs.SetOutput(errw)
 	path := fs.String("config", "", "path to deadbolt.toml")
-	if err := fs.Parse(args); err != nil {
+	force := fs.Bool("force", false, "edit even while the server is running")
+	reveal := fs.Bool("reveal", false, "show secret values")
+	all := fs.Bool("all", false, "mods add: enable every mod in the item")
+	mod := fs.String("mod", "", "mods add: comma-separated mod ids to enable")
+	if err := fs.Parse(reorder(args)); err != nil {
 		if err == flag.ErrHelp {
 			return nil, 0
 		}
@@ -43,7 +69,7 @@ func load(name string, args []string, errw io.Writer) (*env, int) {
 		fmt.Fprintf(errw, "dbolt: cannot read %s: %v\n", cfg.INIPath(), err)
 		return nil, 1
 	}
-	return &env{cfg: cfg, ini: ini, unit: svc.New(cfg.Server.Service), rest: fs.Args()}, -1
+	return &env{cfg: cfg, ini: ini, unit: svc.New(cfg.Server.Service), rest: fs.Args(), force: *force, reveal: *reveal, all: *all, mod: *mod}, -1
 }
 
 func (e *env) rcon() (*rcon.Client, error) {

@@ -84,6 +84,11 @@ func InstallArgs(dir, branch string, validate bool) []string {
 	return append(a, "+quit")
 }
 
+// WorkshopArgs downloads one Workshop item into <dir>/steamapps/workshop/content/108600/<id>.
+func WorkshopArgs(dir, id string) []string {
+	return []string{"+force_install_dir", dir, "+login", "anonymous", "+workshop_download_item", WorkshopAppID, id, "+quit"}
+}
+
 // LocalMods returns installed Workshop item id -> timeupdated (unix seconds).
 func LocalMods(installDir string) (map[string]int64, error) {
 	b, err := os.ReadFile(filepath.Join(installDir, "steamapps", "workshop", "appworkshop_"+WorkshopAppID+".acf"))
