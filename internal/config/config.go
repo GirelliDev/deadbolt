@@ -36,11 +36,17 @@ type Steam struct {
 	Branch   string `toml:"branch"`   // "" = keep the installed branch; public, unstable...
 }
 
+type Web struct {
+	Listen   string `toml:"listen"`    // loopback by default; anything else is opt-in
+	StateDir string `toml:"state_dir"` // admin password hash and audit log (0700)
+}
+
 type Config struct {
 	Server Server `toml:"server"`
 	RCON   RCON   `toml:"rcon"`
 	Backup Backup `toml:"backup"`
 	Steam  Steam  `toml:"steam"`
+	Web    Web    `toml:"web"`
 }
 
 func Default() Config {
@@ -54,6 +60,7 @@ func Default() Config {
 		RCON:   RCON{Host: "127.0.0.1"},
 		Backup: Backup{Dir: "/home/pz/deadbolt-backups", KeepDaily: 7, KeepWeekly: 4},
 		Steam:  Steam{SteamCMD: "/usr/games/steamcmd"},
+		Web:    Web{Listen: "127.0.0.1:8787", StateDir: "/var/lib/deadbolt"},
 	}
 }
 

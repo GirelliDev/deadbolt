@@ -1,0 +1,11 @@
+# Example unit: applies game/mod updates only when the server is empty.
+[Unit]
+Description=Deadbolt update watcher for Project Zomboid
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/dbolt update watch -config /etc/deadbolt/deadbolt.toml -interval 10m
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

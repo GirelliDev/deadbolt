@@ -1,0 +1,24 @@
+# Copy to /etc/deadbolt/deadbolt.toml. Every value shown is the default.
+[server]
+name        = "servertest"          # the -servername of your server
+service     = "pz.service"          # systemd unit that runs it
+install_dir = "/home/pz/server"     # dedicated server files
+data_dir    = "/home/pz/Zomboid"    # Saves, Server (ini), db
+
+[rcon]
+host     = "127.0.0.1"
+port     = 0                        # 0 = RCONPort from the server .ini
+password = ""                       # empty = RCONPassword from the server .ini
+
+[backup]
+dir         = "/home/pz/deadbolt-backups"
+keep_daily  = 7
+keep_weekly = 4
+
+[steam]
+steamcmd = "/usr/games/steamcmd"
+branch   = ""                       # "" = keep the installed branch (public, unstable...)
+
+[web]
+listen    = "127.0.0.1:8787"        # loopback by default; put an HTTPS proxy in front to expose it
+state_dir = "/var/lib/deadbolt"     # admin password hash + audit log

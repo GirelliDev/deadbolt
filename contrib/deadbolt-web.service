@@ -1,0 +1,15 @@
+# Example unit for the admin panel. Copy to /etc/systemd/system/, adjust paths, then:
+#   systemctl daemon-reload && systemctl enable --now deadbolt-web
+[Unit]
+Description=Deadbolt admin panel for Project Zomboid
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/dbolt web -config /etc/deadbolt/deadbolt.toml
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

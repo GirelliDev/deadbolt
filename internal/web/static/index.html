@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deadbolt</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header><h1>Deadbolt</h1><span id="who"></span><button id="logout" class="ghost hidden">Log out</button></header>
+
+<main id="login" class="card narrow hidden">
+  <h2>Sign in</h2>
+  <form id="loginForm">
+    <label>Admin password <input type="password" id="pw" autocomplete="current-password" required></label>
+    <button type="submit">Sign in</button>
+    <p id="loginErr" class="err"></p>
+  </form>
+</main>
+
+<main id="app" class="hidden">
+  <section class="card">
+    <h2>Server</h2>
+    <div id="statusLine" class="muted">loading…</div>
+    <div class="row">
+      <button data-ctl="start">Start</button>
+      <button data-ctl="restart">Restart</button>
+      <button data-ctl="stop" class="danger">Stop</button>
+      <button id="saveBtn" class="ghost">Save world</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Players <span id="pcount" class="muted"></span></h2>
+    <div id="playersErr" class="err"></div>
+    <table id="players"><thead><tr><th>Name</th><th>Actions</th></tr></thead><tbody></tbody></table>
+    <div class="row">
+      <input id="msg" placeholder="Broadcast message" maxlength="200">
+      <button id="msgBtn">Send to everyone</button>
+    </div>
+    <div class="row">
+      <input id="offUser" placeholder="Player name (offline ok)" maxlength="40">
+      <button id="unbanBtn" class="ghost">Unban</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Updates</h2>
+    <div id="updates" class="muted">checking…</div>
+    <button id="updRefresh" class="ghost">Check again</button>
+    <p class="muted">Updates are applied by <code>dbolt update watch</code> when the server is empty.</p>
+  </section>
+
+  <section class="card">
+    <h2>Backups</h2>
+    <button id="bkBtn">Back up now</button>
+    <table id="backups"><thead><tr><th>Name</th><th>Size</th><th>Kind</th></tr></thead><tbody></tbody></table>
+  </section>
+
+  <section class="card">
+    <h2>Mods</h2>
+    <table id="mods"><thead><tr><th>Workshop item</th><th>Mods</th></tr></thead><tbody></tbody></table>
+  </section>
+  <div id="toast" class="toast hidden"></div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

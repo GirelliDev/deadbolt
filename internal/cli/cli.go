@@ -25,7 +25,7 @@ func commands() []command {
 		{"update", "update game and mods (waits for an empty server)", cmdUpdate},
 		{"mods", "add, remove and list Workshop mods", cmdMods},
 		{"config", "view and edit server settings", cmdConfig},
-		{"web", "run the web panel", todo("web")},
+		{"web", "run the web panel", cmdWeb},
 	}
 }
 
