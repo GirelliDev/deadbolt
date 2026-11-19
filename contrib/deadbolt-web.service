@@ -1,15 +1,20 @@
-# Example unit for the admin panel. Copy to /etc/systemd/system/, adjust paths, then:
+# Admin panel. Install as root, then:
 #   systemctl daemon-reload && systemctl enable --now deadbolt-web
+# It starts only once an admin password exists: run `sudo -u dbolt dbolt web passwd`.
+# Do not add NoNewPrivileges=: dbolt uses sudo (narrow sudoers rule) to drive the game service.
 [Unit]
 Description=Deadbolt admin panel for Project Zomboid
-After=network-online.target
+After=network-online.target pz.service
+ConditionPathExists=/var/lib/deadbolt/admin.hash
 
 [Service]
-ExecStart=/usr/local/bin/dbolt web -config /etc/deadbolt/deadbolt.toml
+User=dbolt
+WorkingDirectory=/var/lib/deadbolt
+ExecStart=/usr/local/bin/dbolt web
 Restart=on-failure
-NoNewPrivileges=true
-ProtectSystem=full
+RestartSec=5
 PrivateTmp=true
+ProtectSystem=full
 
 [Install]
 WantedBy=multi-user.target

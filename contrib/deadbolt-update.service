@@ -1,11 +1,19 @@
-# Example unit: applies game/mod updates only when the server is empty.
+# Applies game and Workshop updates only when nobody is online (2 empty checks in a row),
+# after a backup, with rollback. Install as root, then:
+#   systemctl daemon-reload && systemctl enable --now deadbolt-update
+# Do not add NoNewPrivileges=: dbolt uses sudo (narrow sudoers rule).
 [Unit]
 Description=Deadbolt update watcher for Project Zomboid
-After=network-online.target
+After=network-online.target pz.service
 
 [Service]
-ExecStart=/usr/local/bin/dbolt update watch -config /etc/deadbolt/deadbolt.toml -interval 10m
+User=dbolt
+WorkingDirectory=/var/lib/deadbolt
+ExecStart=/usr/local/bin/dbolt update watch -interval 10m
 Restart=on-failure
+RestartSec=30
+PrivateTmp=true
+ProtectSystem=full
 
 [Install]
 WantedBy=multi-user.target
